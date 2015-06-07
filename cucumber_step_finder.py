@@ -23,7 +23,7 @@ class CucumberBaseCommand(sublime_plugin.WindowCommand, object):
   def find_all_steps(self):
     features_path = self.settings_get('cucumber_features_path')
     step_pattern = self.settings_get('cucumber_step_pattern')
-    pattern = re.compile(r'((.*)(\/\^.*))\$\/')
+    pattern = re.compile(r'(?:((.*)(\/\^.*))\$\/|((.*)(%r{.*))\$})')
     self.steps = []
     folders = self.window.folders()
     for folder in folders:
@@ -109,7 +109,7 @@ class MatchStepCommand(CucumberBaseCommand):
      short_text = re.sub(pattern, '', text).strip()
      self.find_all_steps()
 
-     step_filter = re.compile(r'.*\/\^(.*)\$\/') # map all steps
+     step_filter = re.compile(r'.*(?:\/|%r{)\^(.*)\$(?:\/|})') # map all steps
      steps_regex = [re.match(step_filter, x[0]).group(1) for x in self.steps]
 
      for step in self.steps:
